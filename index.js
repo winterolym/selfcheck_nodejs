@@ -5,10 +5,10 @@ var fs = require('fs');
 var path = require("path");
 var app = express();
 
-const httpsServer = https.createServer({
-  key: fs.readFileSync(path.join(process.env.SSLPATH,'fullchain.cer')),
-  cert: fs.readFileSync(path.join(process.env.SSLPATH,'hahah.tech.key')),
-}, app);
+// const httpsServer = https.createServer({
+//   key: fs.readFileSync(path.join(process.env.SSLPATH,'fullchain.cer')),
+//   cert: fs.readFileSync(path.join(process.env.SSLPATH,'hahah.tech.key')),
+// }, app);
 
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({extended: true}));
@@ -20,7 +20,15 @@ app.use('/', function(req, res) {
 app.use('/api/execute', require('./routes/execute'));
 app.use('/api/get', require('./routes/get'));
 
-httpsServer.listen(3001, () => {
+// httpsServer.listen(3001, () => {
+//   console.log('HTTPS Server running on port 3001');
+// });
+
+var http = require('http');
+
+var server = http.createServer(function(request, response) {});
+
+server.listen(process.env.PORT||3001, "0.0.0.0", function() {
   console.log('HTTPS Server running on port 3001');
 });
 
