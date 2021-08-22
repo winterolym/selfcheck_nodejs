@@ -14,7 +14,7 @@ app.use(methodOverride('_method'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-app.use('/', function(req, res) {
+app.get('/', function(req, res) {
   res.send('Hello World');
 });
 app.use('/api/execute', require('./routes/execute'));
