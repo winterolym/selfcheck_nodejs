@@ -1,0 +1,16 @@
+{
+  "name": "selfcheck",
+  "version": "1.0.0",
+  "description": "API application for automated selfcheck for COIVD19",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "winter",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "hcs.js": "^1.1.7",
+    "method-override": "^3.0.0"
+  }
+}
