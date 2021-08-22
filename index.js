@@ -5,8 +5,8 @@ var fs = require('fs');
 var app = express();
 
 const httpsServer = https.createServer({
-  key: fs.readFileSync('${process.env.SSLPATH}/fullchain.cer'),
-  cert: fs.readFileSync('${process.env.SSLPATH}/hahah.tech.key'),
+  key: fs.readFileSync(path.join(process.env.SSLPATH,'fullchain.cer')),
+  cert: fs.readFileSync(path.join(process.env.SSLPATH,'hahah.tech.key')),
 }, app);
 
 app.use(methodOverride('_method'));
