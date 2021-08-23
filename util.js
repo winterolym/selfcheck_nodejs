@@ -2,80 +2,91 @@ var hcs = require("hcs.js");
 var util = {};
 
 util.login = async function (req, res, next) {
-  const schools = await hcs.searchSchool(req.body.schoolName);
-  if (schools.length === 0) {
-    res.status(400).json({
-      error: true,
-      code: "SCHOOL",
-      message: "°Ë»öµÈ ÇĞ±³°¡ ¾ø½À´Ï´Ù.",
-    });
-  }
-  const school = schools[0];
-  res.locals.name = req.body.name;
-  res.locals.birthday = req.body.birth;
-  res.locals.schoolCode = school.schoolCode;
-  res.locals.endpoint = school.endpoint;
+  try {
+    const schools = await hcs.searchSchool(req.body.schoolName);
+    if (schools.length === 0) {
+      res.status(400).json({
+        error: true,
+        code: "SCHOOL",
+        message: "ê²€ìƒ‰ëœ í•™êµê°€ ì—†ìŠµë‹ˆë‹¤.",
+      });
+    }
+    const school = schools[0];
+    res.locals.name = req.body.name;
+    res.locals.birthday = req.body.birth;
+    res.locals.schoolCode = school.schoolCode;
+    res.locals.endpoint = school.endpoint;
 
-  const login = await hcs.login(
-    school.endpoint,
-    school.schoolCode,
-    res.locals.name,
-    res.locals.birthday
-  );
-  if (!login.success) {
-    res.status(400).json({
-      error: true,
-      code: "LOGIN",
-      message: "·Î±×ÀÎ¿¡ ½ÇÆĞÇß½À´Ï´Ù.",
-    });
-  }
-  if (login.agreementRequired) {
-    await hcs.updateAgreement(school.endpoint, login.token);
-  }
-  res.locals.login_token = login.token;
+    const login = await hcs.login(
+      school.endpoint,
+      school.schoolCode,
+      res.locals.name,
+      res.locals.birthday
+    );
+    if (!login.success) {
+      res.status(400).json({
+        error: true,
+        code: "LOGIN",
+        message: "ë¡œê·¸ì¸ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.",
+      });
+    }
+    if (login.agreementRequired) {
+      await hcs.updateAgreement(school.endpoint, login.token);
+    }
+    res.locals.login_token = login.token;
 
-  const passwordExists = await hcs.passwordExists(school.endpoint, login.token);
-  if (!passwordExists) {
-    res.status(400).json({
-      error: true,
-      code: "PASSWORD_NONE",
-      message: "ÀÚ°¡Áø´Ü ºñ¹Ğ¹øÈ£°¡ ¾ø½À´Ï´Ù.",
-    });
-  }
+    const passwordExists = await hcs.passwordExists(
+      school.endpoint,
+      login.token
+    );
+    if (!passwordExists) {
+      res.status(400).json({
+        error: true,
+        code: "PASSWORD_NONE",
+        message: "ìê°€ì§„ë‹¨ ë¹„ë°€ë²ˆí˜¸ê°€ ì—†ìŠµë‹ˆë‹¤.",
+      });
+    }
 
-  const secondLogin = await hcs.secondLogin(
-    school.endpoint,
-    login.token,
-    req.body.password
-  );
-  if (secondLogin.success) {
-    res.locals.password_token = secondLogin.token;
-    next();
-  }
-  if (secondLogin.message) {
-    res.status(400).json({
-      error: true,
-      code: "PASSWORD_MESSAGE",
-      message: secondLogin.message,
-    });
-  }
-  if (secondLogin.remainingMinutes) {
-    res.status(400).json({
-      error: true,
-      code: "PASSWORD_WAIT",
-      number: secondLogin.remainingMinutes,
-      message:
-        "5È¸ ÀÌ»ó ½ÇÆĞÇÏ¿© ${secondLogin.remainingMinutes}ºĞ ÈÄ¿¡ Àç½Ãµµ°¡ °¡´ÉÇÕ´Ï´Ù.",
-    });
-  }
-  if (!secondLogin.success) {
-    res.status(400).json({
-      error: true,
-      code: "PASSWORD_INVALID",
-      number: secondLogin.failCount,
-      message:
-        "Àß¸øµÈ ºñ¹Ğ¹øÈ£ÀÔ´Ï´Ù. 5È¸ ÀÌ»ó ½ÇÆĞ½Ã 5ºĞ ÈÄ¿¡ Àç½Ãµµ°¡ °¡´ÉÇÕ´Ï´Ù. ÇöÀç ${secondLogin.failCount}¹ø ½ÇÆĞÇÏ¼Ì½À´Ï´Ù.",
-    });
+    const secondLogin = await hcs.secondLogin(
+      school.endpoint,
+      login.token,
+      req.body.password
+    );
+    if (secondLogin.success) {
+      res.locals.password_token = secondLogin.token;
+      next();
+    }
+    if (secondLogin.message) {
+      res.status(400).json({
+        error: true,
+        code: "PASSWORD_MESSAGE",
+        message: secondLogin.message,
+      });
+    }
+    if (secondLogin.remainingMinutes) {
+      res.status(400).json({
+        error: true,
+        code: "PASSWORD_WAIT",
+        number: secondLogin.remainingMinutes,
+        message:
+          "5íšŒ ì´ìƒ ì‹¤íŒ¨í•˜ì—¬ " +
+          secondLogin.remainingMinutes +
+          "ë¶„ í›„ì— ì¬ì‹œë„ê°€ ê°€ëŠ¥í•©ë‹ˆë‹¤.",
+      });
+    }
+    if (!secondLogin.success) {
+      res.status(400).json({
+        error: true,
+        code: "PASSWORD_INVALID",
+        number: secondLogin.failCount,
+        message:
+          "ì˜ëª»ëœ ë¹„ë°€ë²ˆí˜¸ì…ë‹ˆë‹¤. 5íšŒ ì´ìƒ ì‹¤íŒ¨ì‹œ 5ë¶„ í›„ì— ì¬ì‹œë„ê°€ ê°€ëŠ¥í•©ë‹ˆë‹¤. í˜„ì¬ " +
+          secondLogin.failCount +
+          "ë²ˆ ì‹¤íŒ¨í•˜ì…¨ìŠµë‹ˆë‹¤.",
+      });
+    }
+  } catch (err) {
+    console.log(err);
   }
 };
 
