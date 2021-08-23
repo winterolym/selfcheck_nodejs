@@ -32,7 +32,7 @@ app.use('/api/get', require('./routes/get'));
 // server.listen(process.env.PORT||3000, "0.0.0.0", function() {
 //   console.log('HTTPS Server running on port 3001');
 // });
-var port = 3001;
+var port = process.env.PORT?? 3001;
 app.listen(port, '0.0.0.0', function(){
   console.log('server on! http://localhost:'+port);
 });
