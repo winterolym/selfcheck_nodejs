@@ -15,68 +15,22 @@ router.post('/selfcheck', util.login, async function(req, res){
     // 학생 본인 또는 동거인이 방역당국에 의해 현재 자가격리가 이루어지고 있나요?
     Q3: false,
   };
-  const result = await hcs.registerSurvey(res.locals.endpoint, res.locals.password_token, survey);
-  console.log(result);
-  res.status(200).json(result);
+  let result = '';
+  try {
+    result = await hcs.registerSurvey(res.locals.endpoint, res.locals.password_token, survey);
+  } catch (err) {
+    console.log(err);
+  }
 
-  // pythonProcess.on('close', (code) => {
-  //   selfcheck_data = JSON.parse(selfcheck_data);
-  //   if (selfcheck_data.error) {
-  //     res.status(400).json({
-  //       "error":selfcheck_data.code,
-  //       "message":selfcheck_data.message
-  //     });
-  //   }
-  //   else {
-  //     res.status(200).json(selfcheck_data);
-  //   }
-  // })
-});
-
-router.post('/selfcheck-token', function(req, res){
-  let selfcheck_data = '';
-  const pythonProcess = spawn(python_cmd,['./scripts/selfcheck_token.py',req.body.token]);
-  pythonProcess.stdout.on('data', function (data) {
-    selfcheck_data += data.toString();
-  });
-  pythonProcess.stderr.on('data', function (data) {
-    selfcheck_data += data.toString();
-  });
-  pythonProcess.on('close', (code) => {
-    selfcheck_data = JSON.parse(selfcheck_data);
-    if (selfcheck_data.error) {
-      res.status(400).json({
-        "error":selfcheck_data.code,
-        "message":selfcheck_data.message
-      });
-    }
-    else {
-      res.status(200).json(selfcheck_data);
-    }
-  })
-});
-
-router.post('/generate-token', function(req, res){
-  let pw_token = '';
-  const pythonProcess = spawn(python_cmd,['./scripts/generate_token.py',req.body.name,req.body.birth,req.body.area,req.body.schoolName,req.body.schoolType,req.body.password]);
-  pythonProcess.stdout.on('data', function (data) {
-    pw_token += data.toString();
-  });
-  pythonProcess.stderr.on('data', function (data) {
-    pw_token += data.toString();
-  });
-  pythonProcess.on('close', (code) => {
-    pw_token = JSON.parse(pw_token);
-    if (pw_token.error) {
-      res.status(400).json({
-        "error":pw_token.code,
-        "message":pw_token.message
-      });
-    }
-    else {
-      res.status(200).json(pw_token);
-    }
-  })
+  if (!result) {
+    res.status(400).json({
+      "error":"SURVEY",
+      "message":"자가진단 제출 중 오류가 생겼습니다."
+    });
+  }
+  else {
+    res.status(200).json(result);
+  }
 });
 
 module.exports = router;
