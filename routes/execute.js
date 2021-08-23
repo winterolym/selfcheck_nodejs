@@ -2,9 +2,16 @@ var express = require('express');
 const spawn = require("child_process").spawn;
 var router = express.Router();
 
+let python_cmd ='';
+  if(process.env.NODE_ENV) {
+    python_cmd = 'python3';
+  } else {
+    python_cmd = 'python';
+  }
+
 router.post('/selfcheck', function(req, res){
   let selfcheck_data = '';
-  const pythonProcess = spawn('python',['./scripts/selfcheck.py',req.body.name,req.body.birth,req.body.area,req.body.schoolName,req.body.schoolType,req.body.password,req.body.custom]);
+  const pythonProcess = spawn(python_cmd,['./scripts/selfcheck.py',req.body.name,req.body.birth,req.body.area,req.body.schoolName,req.body.schoolType,req.body.password,req.body.custom]);
   pythonProcess.stdout.on('data', function (data) {
     selfcheck_data += data.toString();
   });
@@ -27,7 +34,7 @@ router.post('/selfcheck', function(req, res){
 
 router.post('/selfcheck-token', function(req, res){
   let selfcheck_data = '';
-  const pythonProcess = spawn('python',['./scripts/selfcheck_token.py',req.body.token]);
+  const pythonProcess = spawn(python_cmd,['./scripts/selfcheck_token.py',req.body.token]);
   pythonProcess.stdout.on('data', function (data) {
     selfcheck_data += data.toString();
   });
@@ -50,7 +57,7 @@ router.post('/selfcheck-token', function(req, res){
 
 router.post('/generate-token', function(req, res){
   let pw_token = '';
-  const pythonProcess = spawn('python',['./scripts/generate_token.py',req.body.name,req.body.birth,req.body.area,req.body.schoolName,req.body.schoolType,req.body.password]);
+  const pythonProcess = spawn(python_cmd,['./scripts/generate_token.py',req.body.name,req.body.birth,req.body.area,req.body.schoolName,req.body.schoolType,req.body.password]);
   pythonProcess.stdout.on('data', function (data) {
     pw_token += data.toString();
   });
