@@ -3,11 +3,11 @@ const spawn = require("child_process").spawn;
 var router = express.Router();
 
 let python_cmd ='';
-  if(process.env.NODE_ENV) {
-    python_cmd = 'python3';
-  } else {
-    python_cmd = 'python';
-  }
+if(process.env.PYTHON) {
+  python_cmd = 'python3';
+} else {
+  python_cmd = 'python';
+}
 
 router.post('/selfcheck', function(req, res){
   let selfcheck_data = '';
