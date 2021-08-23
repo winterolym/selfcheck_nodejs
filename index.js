@@ -17,7 +17,7 @@ app.use(express.json());
 app.get('/', function(req, res) {
   res.send('Hello World');
 });
-app.use('/api/execute', require('./routes/execute'));
+app.use('/api/run', require('./routes/run'));
 app.use('/api/get', require('./routes/get'));
 
 // httpsServer.listen(3001, () => {
