@@ -1,6 +1,6 @@
 var express = require('express');
 var methodOverride = require('method-override');
-var https = require('https');
+// var https = require('https');
 var fs = require('fs');
 var path = require("path");
 var app = express();
@@ -24,15 +24,15 @@ app.use('/api/get', require('./routes/get'));
 //   console.log('HTTPS Server running on port 3001');
 // });
 
-var http = require('http');
+// var http = require('http');
 
-var server = http.createServer(function(request, response) {});
+// var server = http.createServer(function(request, response) {});
 
-server.listen(process.env.PORT||3001, "0.0.0.0", function() {
-  console.log('HTTPS Server running on port 3001');
-});
 
-// var port = 3001;
-// app.listen(port, function(){
-//   console.log('server on! http://localhost:'+port);
+// server.listen(process.env.PORT||3000, "0.0.0.0", function() {
+//   console.log('HTTPS Server running on port 3001');
 // });
+var port = 3001;
+app.listen(port, '0.0.0.0', function(){
+  console.log('server on! http://localhost:'+port);
+});
