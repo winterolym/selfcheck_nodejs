@@ -36,5 +36,5 @@ app.use('/api/get', require('./routes/get'));
 // });
 var port = process.env.PORT?? 3001;
 app.listen(port, '0.0.0.0', function(){
-  console.log('[Selfcheck] Server listening on 0.0.0.0:' + port);
+  console.log(new Date().toISOString() + '[Selfcheck] Server listening on 0.0.0.0:' + port);
 });
