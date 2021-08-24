@@ -10,6 +10,7 @@
   "author": "winter",
   "license": "MIT",
   "dependencies": {
+    "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "hcs.js": "^1.1.7",
     "https": "^1.0.0",
