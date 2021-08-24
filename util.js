@@ -91,9 +91,9 @@ util.login = async function (req, res, next) {
 };
 
 util.logger = function (req, res, next) {
-  console.log("[Selfcheck] type=req method="+req.method+" path="+req.originalUrl+" host="+req.hostname+" from="+req.ip+" protocol="+req.protocol);
+  console.log(new Date().toISOString()+" [Selfcheck] type=req method="+req.method+" path="+req.originalUrl+" host="+req.hostname+" from="+req.ip+" protocol="+req.protocol);
   res.on("finish", () => {
-    console.log("[Selfcheck] type=res method="+req.method+" path="+req.originalUrl+" host="+req.hostname+" from="+req.ip+" protocol="+req.protocol);
+    console.log(new Date().toISOString()+" [Selfcheck] type=res method="+req.method+" path="+req.originalUrl+" host="+req.hostname+" from="+req.ip+" protocol="+req.protocol);
   });
   next();
 };
