@@ -25,7 +25,7 @@ router.post('/selfcheck', util.login, async function(req, res){
   if (!result) {
     res.status(400).json({
       "error":"SURVEY",
-      "message":"자가진단 제출 중 오류가 생겼습니다."
+      "message":"자가진단 제출 중 오류가 발생했습니다."
     });
   }
   else {
